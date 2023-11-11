@@ -3,6 +3,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    @apply dark:bg-neutral-900;
+  }
+}
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -96,6 +101,24 @@ button:focus-visible {
 }
 
 #PayPage .SelPayCg {
+  border-radius: 0.375rem 0.375rem 0 0;
+}
+
+#PayPage .SelPayCg li:hover {
+  background: white;
+  cursor: pointer;
+}
+
+#PayPage .SelPayCg li:first-of-type {
+  border-top-left-radius: 0.375rem;
+}
+#PayPage .SelPayCg li:last-of-type {
+  border-top-right-radius: 0.375rem;
+}
+
+#PayPage .SelPayCg,
+/* #PayPage .SelPayCg, */
+#PayPage .SelPayAcc {
   border-radius: 0.375rem 0.375rem 0 0;
 }
 

@@ -5,5 +5,4 @@ import '@vuepic/vue-datepicker/dist/main.css';
 import './style.css'
 import '@vuepic/vue-datepicker/dist/main.css'
 
-
 createApp(App).component('VueDatePicker', VueDatePicker).mount('#app')
