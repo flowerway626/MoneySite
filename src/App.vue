@@ -42,7 +42,7 @@
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
         </svg> </button>
   </div>
-
+  <!-- <loadingModal></loadingModal> -->
   <div v-if="activeTab === 'Pay'" class=" h-4/5">
     <PayPage></PayPage>
   </div>
@@ -54,6 +54,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import PayPage from './pages/PayPage.vue'
+import loadingModal from './components/loading.vue'
 
 let activeTab = ref('Pay')
 let Theme = ref('dark')

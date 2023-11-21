@@ -1,6 +1,6 @@
 <template>
   <div id="PayPage" class="py-3 sm:px-12 sm:py-7 container border border-none">
-    <div class="grid grid-cols-8 gap-3 mx-auto text-center mb-4 sm:mb-8">
+        <div class="grid grid-cols-8 gap-3 mx-auto text-center mb-4 sm:mb-8">
       <!-- <h4 class="font-bold tracking-tight text-gray-900 text-center sm:text-xl"> -->
       <div class="col-span-2 sm:col-span-3 mx-auto" @click="PayData.Date">
         <i data-feather="chevron-left"></i>
@@ -220,15 +220,16 @@ const SubmitData = (Data) => {
 
 async function PostData(Data) {
   try {
-    const cors = 'https://cors-anywhere.herokuapp.com/'; //解決 CORS 阻擋
+    // const cors = 'https://cors-anywhere.herokuapp.com/'; //解決 CORS 阻擋
     const url = "https://script.google.com/macros/s/AKfycbwmfFr2y_hxpvJIqPkQKqfuyGOfvFSMOpKegpp5SL0LzKGIUUC8iyb3Ltf2dgPlSqezxA/exec"
-    const { data } = await axios.post(cors + url, Data)
-    if (data.status === 'success') {
-      Swal.fire({ title: '記帳成功!', icon: data.status })
+    const response = await axios.post(url, Data)
+    if (response.data.status === 'success') {
+      Swal.fire({ title: '記帳成功!', icon: response.data.status })
     } else {
       console.log(response)
     }
   } catch (error) {
+    Swal.fire({ title: '失敗!', text: error.message, icon: 'error' })
     console.error(error)
   }
 }
