@@ -5,7 +5,7 @@
       <div class="col-span-2 sm:col-span-3 mx-auto" @click="PayData.Date">
         <i data-feather="chevron-left"></i>
       </div>
-      <div class="col-span-5 sm:col-span-2">
+      <div class="col-span-5 sm:col-span-3">
         <VueDatePicker v-model="PayData.Date" :enable-time-picker="false" locale="zh-tw" six-weeks="center" required
           text-input auto-apply></VueDatePicker>
       </div>
@@ -202,7 +202,6 @@ const SubmitData = (Data) => {
   if (PayOtherInput.value.length !== 0) {
     PayData.Other.push(PayOtherInput.value)
   }
-  console.log(Data)
   Data.Other = Data.Other.join(", ")
   for (const Pay of Object.keys(PayData)) {
     if (Pay !== 'Payment' && Pay !== 'Other' && !PayData[Pay]) {
