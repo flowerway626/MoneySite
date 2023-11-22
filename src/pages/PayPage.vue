@@ -1,12 +1,12 @@
 <template>
   <div id="PayPage" class="py-3 sm:px-12 sm:py-7 container border border-none">
-        <div class="grid grid-cols-8 gap-3 mx-auto text-center mb-4 sm:mb-8">
+        <div class="grid grid-cols-9 gap-3 mx-auto text-center mb-4 sm:mb-8">
       <!-- <h4 class="font-bold tracking-tight text-gray-900 text-center sm:text-xl"> -->
       <div class="col-span-2 sm:col-span-3 mx-auto" @click="PayData.Date">
         <i data-feather="chevron-left"></i>
       </div>
       <div class="col-span-5 sm:col-span-2">
-        <VueDatePicker v-model="PayData.Date" utc :enable-time-picker="false" locale="zh-tw" six-weeks="center" required
+        <VueDatePicker v-model="PayData.Date" :enable-time-picker="false" locale="zh-tw" six-weeks="center" required
           text-input auto-apply></VueDatePicker>
       </div>
       <div class="col-span-2 sm:col-span-3 mx-auto">
@@ -18,9 +18,9 @@
       <div class="row-span-2">
         <label for="Message" class="font-semibold mb-2 text-left block dark:text-white">類別</label>
         <div class="shadow-sm rounded-md border dark:border-none w-full">
-          <ul class="grid grid-cols-7 SelPayCg bg-teal-400">
+          <ul class="grid grid-cols-4 sm:grid-cols-7 SelPayCg bg-teal-400">
             <li v-for="PayCg in PayCategories" :key="PayCg"
-              :class="{ 'px-1 py-1 bg-teal-400': true, 'bg-white': PayData.Category === PayCg }"
+              :class="{ 'px-1 py-1': true, 'bg-white': PayData.Category === PayCg }"
               @mouseover="SelectPayCg(PayCg)">
               {{ Object.keys(PayCg)[0] }}
             </li>
@@ -45,7 +45,7 @@
       <div>
         <label for="Amount" class="font-semibold mb-2 text-left block dark:text-white">金額</label>
         <input type="text" id="Amount"
-          class="px-1 py-1 w-full text-left outline-none text-2xl font-bold dark:text-white dark:bg-neutral-700 rounded-md"
+          class="px-1 py-1 w-full text-left outline-none font-bold dark:text-white dark:bg-neutral-700 rounded-md"
           v-model="PayData.Amount">
         <h5 v-if="AmountisNum(PayData.Amount)" class="text-right text-red-300">* 只能輸入數字</h5>
       </div>
@@ -114,7 +114,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref, watch, defineEmits } from 'vue'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import axios from 'axios';
 import Swal from 'sweetalert2'
@@ -191,16 +191,18 @@ const ClassList = (Primary, Selected, ClassName) => {
 
 const CleanData = (Data) => {
   for (const key in Data) {
-      Data[key] = ""
+    if (key !== "Other") Data[key] = ""
     }
+    Date["Other"] = []
     Data["Type"] = "支出"
-    Data["Date"] = new Date().toLocaleString()
+    Data["Date"] = new Date()
 }
 
 const SubmitData = (Data) => {
   if (PayOtherInput.value.length !== 0) {
     PayData.Other.push(PayOtherInput.value)
   }
+  console.log(Data)
   Data.Other = Data.Other.join(", ")
   for (const Pay of Object.keys(PayData)) {
     if (Pay !== 'Payment' && Pay !== 'Other' && !PayData[Pay]) {
@@ -218,7 +220,10 @@ const SubmitData = (Data) => {
   PostData(formData)
 }
 
+const emit = defineEmits();
+
 async function PostData(Data) {
+  emit('loading', true);
   try {
     // const cors = 'https://cors-anywhere.herokuapp.com/'; //解決 CORS 阻擋
     const url = "https://script.google.com/macros/s/AKfycbwmfFr2y_hxpvJIqPkQKqfuyGOfvFSMOpKegpp5SL0LzKGIUUC8iyb3Ltf2dgPlSqezxA/exec"
@@ -228,10 +233,12 @@ async function PostData(Data) {
     } else {
       console.log(response)
     }
+    console.log("response")
   } catch (error) {
     Swal.fire({ title: '失敗!', text: error.message, icon: 'error' })
     console.error(error)
   }
+  emit('loading', false);
 }
 
 // 判斷金額是否輸入為數字
