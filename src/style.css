@@ -5,6 +5,7 @@
 
 @layer base {
   body {
+    @apply bg-slate-200;
     @apply dark:bg-neutral-900;
   }
 }
@@ -104,7 +105,8 @@ button:focus-visible {
   border-radius: 0.375rem 0.375rem 0 0;
 }
 
-#PayPage .SelPayCg li:hover {
+#PayPage .SelPayCg li:hover,
+#PayPage .SelPayAcc li:hover {
   background: white;
   cursor: pointer;
 }
