@@ -18,7 +18,7 @@
       <div class="row-span-2">
         <label for="Message" class="font-semibold mb-2 text-left block dark:text-white">類別</label>
         <div class="shadow-sm rounded-md border dark:border-none w-full">
-          <ul class="grid grid-cols-4 sm:grid-cols-7 SelPayCg bg-teal-400">
+          <ul class="grid grid-cols-4 sm:grid-cols-8 SelPayCg bg-teal-400">
             <li v-for="PayCg in PayCategories" :key="PayCg"
               :class="{ 'px-1 py-1': true, 'bg-white': PayData.Category === PayCg }"
               @mouseover="SelectPayCg(PayCg)">
@@ -150,15 +150,15 @@ let PayOtherInput = ref('')
 
 let PayData = reactive({
   Type: '支出',
-  Account: '' ,                               // 帳戶大分類
-  Acc: '',                                    // 帳戶子分類
-  Category: '',                               // 支出大分類
-  Cg: '',                                     // 支出子分類
-  Date: new Date(),                           // 日期
-  Amount: '',                                 // 金額
-  Detail: '',                                 // 明細
-  Payment: '',                                // 經手帳戶
-  Other: []                                   // 備註
+  Account: '' ,      // 帳戶大分類
+  Acc: '',           // 帳戶子分類
+  Category: '',      // 支出大分類
+  Cg: '',            // 支出子分類
+  Date: new Date(),  // 日期
+  Amount: '',        // 金額
+  Detail: '',        // 明細
+  Payment: '',       // 經手帳戶
+  Other: []          // 備註
 })
 
 // 支出大分類
