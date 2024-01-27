@@ -2,22 +2,22 @@
   <div class="flex justify-between w-full">
     <ul class="flex list-none gap-3 pl-0 ">
       <li>
-        <a class="my-2 block rounded bg-neutral-100 px-7 py-2 text-xs font-medium uppercase leading-tight
+        <router-link class="my-2 block rounded bg-neutral-100 px-7 py-2 text-xs font-medium uppercase leading-tight
         text-neutral-500 data-[te-nav-active]:!bg-primary-100 data-[te-nav-active]:text-primary-700 dark:bg-neutral-700
-        dark:text-white dark:data-[te-nav-active]:text-primary-700 md:mr-4" @click="activeTab = 'Pay'">支出
-        </a>
+        dark:text-white dark:data-[te-nav-active]:text-primary-700 md:mr-4" to="/Pay">支出
+        </router-link>
       </li>
       <li>
-        <a class="my-2 block rounded bg-neutral-100 px-7 py-2 text-xs font-medium uppercase leading-tight text-neutral-500
+        <router-link class="my-2 block rounded bg-neutral-100 px-7 py-2 text-xs font-medium uppercase leading-tight text-neutral-500
           data-[te-nav-active]:!bg-primary-100 data-[te-nav-active]:text-primary-700 dark:bg-neutral-700 dark:text-white
-          dark:data-[te-nav-active]:text-primary-700 md:mr-4" @click="activeTab = 'Income'">收入
-        </a>
+          dark:data-[te-nav-active]:text-primary-700 md:mr-4" to='/Income'>收入
+        </router-link>
       </li>
       <li>
-        <a class="my-2 block rounded bg-neutral-100 px-7 py-2 text-xs font-medium uppercase leading-tight text-neutral-500
+        <router-link class="my-2 block rounded bg-neutral-100 px-7 py-2 text-xs font-medium uppercase leading-tight text-neutral-500
           data-[te-nav-active]:!bg-primary-100 data-[te-nav-active]:text-primary-700 dark:bg-neutral-700 dark:text-white
-          dark:data-[te-nav-active]:text-primary-700 md:mr-4" @click="activeTab = 'Transfer'">轉帳
-        </a>
+          dark:data-[te-nav-active]:text-primary-700 md:mr-4" to='/Transfer'>轉帳
+        </router-link>
       </li>
     </ul>
 
@@ -44,20 +44,17 @@
   </div>
 
   <loadingModal v-if="isLoading"></loadingModal>
-  <div v-if="activeTab === 'Pay'" class=" h-4/5 px-3">
-    <PayPage @loading="updateLoadingState"></PayPage>
+  
+  <div class=" h-4/5 px-3">
+    <router-view @loading="updateLoadingState"></router-view>
   </div>
-  <div v-if="activeTab === 'Income'">Tab 2</div>
-  <div v-if="activeTab === 'Transfer'">Tab 3</div>
 
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import PayPage from './pages/PayPage.vue'
-import loadingModal from './components/Loading.vue'
+import loadingModal from '@/components/Loading.vue'
 
-let activeTab = ref('Pay')
 let Theme = ref('dark')
 const isLoading = ref(false)
 
