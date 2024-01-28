@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '@/App.vue'
+
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
@@ -14,7 +15,7 @@ const router = createRouter({
     {
       path: '/Pay',
       name: 'Pay',
-      component: import('@/pages/PayPage.vue'),
+      component: () => import('@/pages/PayPage.vue'),
       meta: {
         title: '收支記帳'
       }
@@ -22,7 +23,7 @@ const router = createRouter({
     {
       path: '/Income',
       name: 'Income',
-      component: import('@/pages/IncomePage.vue'),
+      component: () => import('@/pages/IncomePage.vue'),
       meta: {
         title: '收支記帳'
       }
