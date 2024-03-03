@@ -17,7 +17,7 @@ const router = createRouter({
       name: 'Pay',
       component: () => import('@/pages/PayPage.vue'),
       meta: {
-        title: '收支記帳'
+        title: '收支記帳 - 支出'
       }
     },
     {
@@ -25,7 +25,15 @@ const router = createRouter({
       name: 'Income',
       component: () => import('@/pages/IncomePage.vue'),
       meta: {
-        title: '收支記帳'
+        title: '收支記帳 - 收入'
+      }
+    },
+    {
+      path: '/Transfer',
+      name: 'Transfer',
+      component: () => import('@/pages/TransferPage.vue'),
+      meta: {
+        title: '收支記帳 - 轉帳'
       }
     },
     // {

@@ -112,7 +112,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, watch, defineEmits, defineProps } from 'vue'
+import { reactive, ref, watch, defineEmits } from 'vue'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import { fetchData } from '@/utils/fetchData.js'
 import Swal from 'sweetalert2'

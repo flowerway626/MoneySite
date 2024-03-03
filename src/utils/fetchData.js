@@ -1,4 +1,5 @@
 import axios from "axios"
+import Swal from 'sweetalert2'
 
 export const fetchData = async (Method, PageType, data) => {
   try {

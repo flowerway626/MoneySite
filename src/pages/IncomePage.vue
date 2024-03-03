@@ -215,7 +215,7 @@ async function PostData(Data) {
   emit('loading', true);
   try {
     // const cors = 'https://cors-anywhere.herokuapp.com/'; //解決 CORS 阻擋
-    const response = await axios.fetchData("post", "", Data)
+    const response = await fetchData("post", "", Data)
     if (response.data.status === 'success') {
       Swal.fire({ title: '記帳成功!', icon: response.data.status })
       CleanData()
