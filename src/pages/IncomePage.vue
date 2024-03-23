@@ -1,20 +1,18 @@
 <template>
   <div id="IncomePage" class="py-3 sm:px-12 sm:py-7 container border border-none">
-    <div class="grid grid-cols-9 gap-3 mx-auto text-center mb-4 sm:mb-8">
-      <!-- <h4 class="font-bold tracking-tight text-gray-900 text-center sm:text-xl"> -->
-      <div class="col-span-1 sm:col-span-3 mx-auto" @click="IncomeData.Date">
-        <i data-feather="chevron-left"></i>
-      </div>
-      <div class="col-span-7 sm:col-span-3">
-        <VueDatePicker v-model="IncomeData.Date" :enable-time-picker="false" locale="zh-tw" six-weeks="center" required
-          text-input auto-apply dark></VueDatePicker>
-      </div>
-      <div class="col-span-1 sm:col-span-3 mx-auto">
-        <i data-feather="chevron-right"></i>
-      </div>
-    </div>
-
     <div class="grid grid-cols-1 gap-x-12 gap-y-6 sm:grid-cols-2">
+      <div class="grid grid-cols-4 sm:grid-cols-5 gap-3 mx-auto sm:mt-9 w-full">
+        <div class="col-span-3 sm:col-span-3">
+          <VueDatePicker v-model="IncomeData.Date" :enable-time-picker="false" locale="zh-tw" six-weeks="center" required
+          text-input auto-apply dark week-start="0"></VueDatePicker>
+        </div>
+        <div class="col-span-1 sm:col-span-none">
+          <button class="rounded-md bg-teal-600 px-3 sm:px-5 py-2.5 text-center text-sm font-semibold text-white
+          shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
+            focus-visible:outline-teal-600" @click="refresh()">重整</button>
+        </div>
+      </div>
+      <!-- 類別 -->
       <div>
         <label for="Message" class="font-semibold mb-2 text-left block dark:text-white">類別</label>
         <div class="shadow-sm rounded-md border dark:border-none w-full">
@@ -106,25 +104,26 @@
 </template>
 
 <script setup>
-import { reactive, ref, watch, defineEmits } from 'vue'
+import { reactive, ref, watch, defineEmits, onMounted } from 'vue'
 import VueDatePicker from '@vuepic/vue-datepicker';
-import { fetchData } from '@/utils/fetchData.js'
+import { fetchData, stoargaeData, updateData, fetchFormItem } from '@/utils/fetchData.js'
 import Swal from 'sweetalert2'
+
+const updateArrays = (data) => {
+  IncomeCategories.push(...data[0].IncomeCategories)
+  IncomeAccounts.push(...data[1].PayAccounts)
+  IncomeMents.push(...data[2].PayMents)
+  IncomeOthers.push(...data[3].PayOthers)
+  SelectAccount.value = Object.values(IncomeAccounts[0])[0]
+  IncomeData.Account = Object.keys(IncomeAccounts[0])[0]
+  IncomeData.Cg = Object.keys(IncomeCategories)[0]
+}
 
 (async () => {
   try {
     emit('loading', true);
-    const response = await fetchData("get", "Income")
-    if (response.status === 200) {
-      IncomeCategories.push(...response.data[0].IncomeCategories)
-      IncomeAccounts.push(...response.data[1].PayAccounts)
-      IncomeMents.push(...response.data[2].PayMents)
-      IncomeOthers.push(...response.data[3].PayOthers)
-      SelectAccount.value = Object.values(IncomeAccounts[0])[0]
-      IncomeData.Account = Object.keys(IncomeAccounts[0])[0]
-      IncomeData.Cg = Object.keys(IncomeCategories)[0]
-    } else {
-      Swal.fire({ title: 'oops!', text: response.data, icon: 'info' })
+    if (!stoargaeData("Income")) {
+      await fetchFormItem("get", "Income", updateArrays)
     }
   } catch (error) {
     Swal.fire({ title: 'ERROR', text: error.message, icon: 'error' })
@@ -153,6 +152,22 @@ let IncomeData = reactive({
   Other: []          // 備註
 })
 
+onMounted(() => {
+  updateData("Income", updateArrays)
+})
+
+const refresh = async () => {
+  try {
+    emit('loading', true);
+    [IncomeCategories, IncomeAccounts, IncomeMents, IncomeOthers].forEach(arr => arr.splice(0, arr.length))
+    localStorage.removeItem("Income")
+    await fetchFormItem("get", "Income", updateArrays)
+  } catch (error) {
+    Swal.fire({ title: 'ERROR', text: error.message, icon: 'error' })
+    console.error(error);
+  }
+  emit('loading', false);
+}
 
 // 帳戶大分類
 const SelectIncomeAcc = (IncomeAccounts) => {

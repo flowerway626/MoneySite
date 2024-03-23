@@ -14,3 +14,25 @@ export const fetchData = async (Method, PageType, data) => {
     console.error(error);
   }
 }
+
+export const fetchFormItem = async (Method, PageType, update) => {
+  const response = await fetchData(Method, PageType)
+  if (response.status === 200) {
+    await update(response.data)
+    localStorage.setItem(PageType, JSON.stringify(response.data))
+  } else {
+    Swal.fire({ title: 'oops!', text: response.data, icon: 'info' })
+  }
+}
+
+// 取得 localstorage
+export const stoargaeData = (PageType) => {
+  return localStorage.getItem(PageType)
+}
+// 判斷 localstorage 已儲存
+export const updateData = (PageType, Next) => {
+  const stoargae = JSON.parse(stoargaeData(PageType))
+  if (stoargae) {
+    Next(stoargae)
+  }
+}

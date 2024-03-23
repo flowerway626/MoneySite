@@ -1,20 +1,18 @@
 <template>
-  <div id="TransPage" class="py-3 sm:px-12 sm:py-7 container border border-none">
-    <div class="grid grid-cols-9 gap-3 mx-auto text-center mb-4 sm:mb-8">
-      <!-- <h4 class="font-bold tracking-tight text-gray-900 text-center sm:text-xl"> -->
-      <div class="col-span-1 sm:col-span-3 mx-auto" @click="TransData.Date">
-        <i data-feather="chevron-left"></i>
-      </div>
-      <div class="col-span-7 sm:col-span-3">
-        <VueDatePicker v-model="TransData.Date" :enable-time-picker="false" locale="zh-tw" six-weeks="center" required
-          text-input auto-apply dark></VueDatePicker>
-      </div>
-      <div class="col-span-1 sm:col-span-3 mx-auto">
-        <i data-feather="chevron-right"></i>
-      </div>
-    </div>
-
+  <div id="TransPage" class="py-3 sm:px-16 sm:py-6 container border border-none">
     <div class="grid grid-cols-1 gap-x-12 gap-y-6 sm:grid-cols-2">
+      <div class="grid grid-cols-4 sm:grid-cols-5 gap-3 mx-auto sm:mt-9 w-full">
+        <div class="col-span-3 sm:col-span-3">
+          <VueDatePicker v-model="TransData.Date" :enable-time-picker="false" locale="zh-tw" six-weeks="center" required
+          text-input auto-apply dark week-start="0"></VueDatePicker>
+        </div>
+        <div class="col-span-1 sm:col-span-none">
+          <button class="rounded-md bg-teal-600 px-3 sm:px-5 py-2.5 text-center text-sm font-semibold text-white
+          shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
+            focus-visible:outline-teal-600" @click="refresh()">重整</button>
+        </div>
+      </div>
+      <!-- 類別 -->
       <div>
         <label for="Message" class="font-semibold mb-2 text-left block dark:text-white">類別</label>
         <div class="shadow-sm rounded-md border dark:border-none w-full">
@@ -110,28 +108,30 @@
 </template>
 
 <script setup>
-import { reactive, ref, watch, defineEmits } from 'vue'
+import { reactive, ref, watch, defineEmits, onMounted } from 'vue'
 import VueDatePicker from '@vuepic/vue-datepicker';
-import { fetchData } from '@/utils/fetchData.js'
+import { fetchData, stoargaeData, updateData, fetchFormItem } from '@/utils/fetchData.js'
 import Swal from 'sweetalert2'
+
+const updateArrays = (data) => {
+  TransCategories.push(...data[0].TransCategories)
+  TransOutAccounts.push(...data[1].PayAccounts)
+  TransInAccounts.push(...data[1].PayAccounts)
+  TransMents.push(...data[2].PayMents)
+  SelectOutAccount.value = Object.values(TransOutAccounts[0])[0]
+  SelectInAccount.value = Object.values(TransInAccounts[0])[0]
+  TransData.OutAccount = Object.keys(TransOutAccounts[0])[0]
+  TransData.InAccount = Object.keys(TransInAccounts[0])[0]
+  TransData.Cg = TransCategories[0]
+}
 
 (async () => {
   try {
     emit('loading', true);
-    const response = await fetchData("get", "Trans")
-    if (response.status === 200) {
-      TransCategories.push(...response.data[0].TransCategories)
-      TransOutAccounts.push(...response.data[1].PayAccounts)
-      TransInAccounts.push(...response.data[1].PayAccounts)
-      TransMents.push(...response.data[2].PayMents)
-      SelectOutAccount.value = Object.values(TransOutAccounts[0])[0]
-      SelectInAccount.value = Object.values(TransInAccounts[0])[0]
-      TransData.OutAccount = Object.keys(TransOutAccounts[0])[0]
-      TransData.InAccount = Object.keys(TransInAccounts[0])[0]
-      TransData.Cg = TransCategories[0]
-    } else {
-      Swal.fire({ title: 'oops!', text: response.data, icon: 'info' })
+    if (!stoargaeData("Trans")) {
+      await fetchFormItem("get", "Trans", updateArrays)
     }
+
   } catch (error) {
     Swal.fire({ title: 'ERROR', text: error.message, icon: 'error' })
     console.error(error);
@@ -160,6 +160,23 @@ let TransData = reactive({
   Transment: '',     // 經手帳戶
 })
 
+
+onMounted(async() => {
+  await updateData("Trans", updateArrays)
+})
+
+const refresh = async () => {
+  try {
+    emit('loading', true);
+    [TransCategories, TransOutAccounts, TransInAccounts, TransMents].forEach(arr => arr.splice(0, arr.length))
+    localStorage.removeItem("Trans")
+    await fetchFormItem("get", "Trans", updateArrays)
+  } catch (error) {
+    Swal.fire({ title: 'ERROR', text: error.message, icon: 'error' })
+    console.error(error);
+  }
+  emit('loading', false);
+}
 
 // 轉出帳戶大分類
 const SelectTransOutAcc = (TransAccounts) => {

@@ -1,22 +1,19 @@
 <template>
   <div class="flex justify-between w-full">
-    <ul class="flex list-none gap-3 pl-0 ">
+    <ul class="flex list-none gap-3 pl-0">
       <li>
-        <router-link class="my-2 block rounded bg-neutral-100 px-7 py-2 text-xs font-medium uppercase leading-tight
-        text-neutral-500 data-[te-nav-active]:!bg-primary-100 data-[te-nav-active]:text-primary-700 dark:bg-neutral-700
-        dark:text-white dark:data-[te-nav-active]:text-primary-700 md:mr-4" to="/Pay">支出
+        <router-link class="my-2 md:mr-4 block rounded px-7 py-2 text-xs leading-tight
+        bg-neutral-100 text-neutral-500 dark:bg-neutral-700 dark:text-white" to="/Pay">支出
         </router-link>
       </li>
       <li>
-        <router-link class="my-2 block rounded bg-neutral-100 px-7 py-2 text-xs font-medium uppercase leading-tight text-neutral-500
-          data-[te-nav-active]:!bg-primary-100 data-[te-nav-active]:text-primary-700 dark:bg-neutral-700 dark:text-white
-          dark:data-[te-nav-active]:text-primary-700 md:mr-4" to='/Income'>收入
+        <router-link class="my-2 md:mr-4 block rounded px-7 py-2 text-xs leading-tight
+        bg-neutral-100 text-neutral-500 dark:bg-neutral-700 dark:text-white" to='/Income'>收入
         </router-link>
       </li>
       <li>
-        <router-link class="my-2 block rounded bg-neutral-100 px-7 py-2 text-xs font-medium uppercase leading-tight text-neutral-500
-          data-[te-nav-active]:!bg-primary-100 data-[te-nav-active]:text-primary-700 dark:bg-neutral-700 dark:text-white
-          dark:data-[te-nav-active]:text-primary-700 md:mr-4" to='/Transfer'>轉帳
+        <router-link class="my-2 md:mr-4 block rounded px-7 py-2 text-xs leading-tight
+        bg-neutral-100 text-neutral-500 dark:bg-neutral-700 dark:text-white" to='/Transfer'>轉帳
         </router-link>
       </li>
     </ul>
@@ -45,7 +42,7 @@
 
   <loadingModal v-if="isLoading"></loadingModal>
   
-  <div class=" h-4/5 px-3">
+  <div class="h-4/5 px-3 sm:px-12">
     <router-view @loading="updateLoadingState"></router-view>
   </div>
 
