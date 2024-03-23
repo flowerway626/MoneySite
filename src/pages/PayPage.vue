@@ -12,7 +12,7 @@
             focus-visible:outline-teal-600" @click="refresh()">重整</button>
         </div>
       </div>
-      <div class="row-span-2">
+      <div>
         <label for="Message" class="font-semibold mb-2 text-left block dark:text-white">類別</label>
         <div class="shadow-sm rounded-md border dark:border-none w-full">
           <ul class="grid grid-cols-4 sm:grid-cols-8 SelPayCg bg-teal-400">
