@@ -1,5 +1,5 @@
 <template>
-  <div id="TransPage" class="py-3 sm:px-16 sm:py-6 container border border-none">
+  <div id="TransPage" class="py-3 sm:px-12 sm:py-7 container border border-none">
     <div class="grid grid-cols-1 gap-x-12 gap-y-6 sm:grid-cols-2">
       <div class="grid grid-cols-4 sm:grid-cols-5 gap-3 mx-auto sm:mt-9 w-full">
         <div class="col-span-3 sm:col-span-3">
@@ -14,10 +14,11 @@
       </div>
       <!-- 類別 -->
       <div>
-        <label for="Message" class="font-semibold mb-2 text-left block dark:text-white">類別</label>
+        <label for="Message" class="font-semibold mb-2 text-left block dark:text-white">
+          <font-awesome-icon :icon="['fas', 'chart-pie']" /> 類別</label>
         <div class="shadow-sm rounded-md border dark:border-none w-full">
           <ul class="grid grid-cols-2 sm:grid-cols-3 bg-slate-100 dark:bg-neutral-700 rounded-md">
-            <li v-for="TransCg in TransCategories" :key="ment" :class="{
+            <li v-for="TransCg in TransCategories" :key="TransCg" :class="{
               'text-left px-1 py-1 cursor-pointer': true, 'bg-teal-100 dark:text-blcok': TransData.Cg === TransCg,
               'dark:text-white': TransData.Cg !== TransCg
             }" @click="TransData.Cg = TransCg">
@@ -27,16 +28,18 @@
       </div>
       <!-- 明細 -->
       <div>
-        <label for="Detail" class="font-semibold mb-2 text-left block dark:text-white">明細</label>
+        <label for="Detail" class="font-semibold mb-2 text-left block dark:text-white">
+          <font-awesome-icon :icon="['fas', 'align-left']" /> 明細</label>
         <input type="text" id="Detail" v-model="TransData.Detail"
           class="shadow-sm rounded-md border dark:border-none px-1 py-1 w-full text-left bg-slate-100 dark:text-white dark:bg-neutral-700">
       </div>
       <!-- 金額 -->
       <div>
-        <label for="Amount" class="font-semibold mb-2 text-left block dark:text-white">轉帳金額</label>
+        <label for="Amount" class="font-semibold mb-2 text-left block dark:text-white">
+          <font-awesome-icon :icon="['fas', 'dollar-sign']" /> 金額</label>
         <input type="text" id="Amount" v-model="TransData.Amount"
           class="px-1 py-1 w-full text-left outline-none font-bold bg-slate-100 dark:text-white dark:bg-neutral-700 shadow-sm rounded-md">
-        <h5 v-if="AmountisNum(TransData.Amount)" class="text-right text-red-300">* 只能輸入數字</h5>
+        <h5 v-if="AmountMsg" class="text-right text-red-300">* 只能輸入數字</h5>
       </div>
 
       <div class="sm:col-span-2">
@@ -44,7 +47,8 @@
       </div>
       <!-- 轉出帳戶 -->
       <div class="">
-        <label for="Message" class="font-semibold mb-2 text-left block dark:text-white">轉出帳戶</label>
+        <label for="Message" class="font-semibold mb-2 text-left block dark:text-white">
+          <font-awesome-icon :icon="['fas', 'arrow-trend-up']" /> 轉出帳戶</label>
         <div class="shadow-sm rounded-md border dark:border-none w-full">
           <ul class="grid grid-cols-2 sm:grid-cols-4 SelTransOutAcc bg-teal-400">
             <li v-for="Account in TransOutAccounts" :key="Account"
@@ -64,7 +68,8 @@
       </div>
       <!-- 轉入帳戶 -->
       <div class="TransIn">
-        <label for="Message" class="font-semibold mb-2 text-left block dark:text-white">轉入帳戶</label>
+        <label for="Message" class="font-semibold mb-2 text-left block dark:text-white">
+          <font-awesome-icon :icon="['fas', 'arrow-trend-down']" /> 轉入帳戶</label>
         <div class="shadow-sm rounded-md border dark:border-none w-full">
           <ul class="grid grid-cols-2 sm:grid-cols-4 SelTransInAcc bg-teal-400">
             <li v-for="Account in TransInAccounts" :key="Account"
@@ -84,7 +89,8 @@
       </div>
       <!-- 經手帳戶 -->
       <div class="">
-        <label for="Message" class="font-semibold mb-2 text-left block dark:text-white">經手</label>
+        <label for="Message" class="font-semibold mb-2 text-left block dark:text-white">
+          <font-awesome-icon :icon="['fas', 'money-bill-transfer']" /> 經手</label>
         <div class="shadow-sm rounded-md border dark:border-none w-full">
           <ul class="grid grid-cols-2 sm:grid-cols-3 bg-slate-100 dark:bg-neutral-700 rounded-md">
             <li v-for="ment in TransMents" :key="ment" :class="{
@@ -102,7 +108,7 @@
         focus-visible:outline-teal-600 sm:mr-5" @click="SubmitData(TransData)">送出</button>
       <button class="rounded-md bg-teal-600 px-3 sm:px-12 py-2.5 text-center text-sm font-semibold text-white
         shadow-sm hover:bg-teal-500 fous-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
-        focus-visible:outline-teal-600" @click="CleanData()">清除</button>
+        focus-visible:outline-teal-600" @click="CleanData(TransData, '轉帳')">清除</button>
     </div>
   </div>
 </template>
@@ -111,6 +117,7 @@
 import { reactive, ref, watch, defineEmits, onMounted } from 'vue'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import { fetchData, stoargaeData, updateData, fetchFormItem } from '@/utils/fetchData.js'
+import { AmountisNum, NumComma, CleanData} from '@/utils/dataValidation.js'
 import Swal from 'sweetalert2'
 
 const updateArrays = (data) => {
@@ -146,6 +153,7 @@ const TransInAccounts = reactive([])
 const TransMents = reactive([])
 let SelectOutAccount = ref("")
 let SelectInAccount = ref("")
+let AmountMsg = ref(false)
 
 let TransData = reactive({
   Type: '轉帳',
@@ -214,15 +222,6 @@ const ClassList = (Primary, Selected, ClassName) => {
   parentAccountItem.classList.add('bg-teal-100');
 }
 
-// 清空輸入資料
-const CleanData = () => {
-  for (const key in TransData) {
-    TransData[key] = ""
-  }
-  TransData["Type"] = "轉帳"
-  TransData["Date"] = new Date()
-}
-
 // 送出輸入資料
 const SubmitData = (Data) => {
   for (const Trans of Object.keys(TransData)) {
@@ -248,7 +247,7 @@ async function PostData(Data) {
     const response = await fetchData("post", "", Data)
     if (response.data.status === 'success') {
       Swal.fire({ title: '記帳成功!', icon: response.data.status })
-      CleanData()
+      CleanData(TransData, '轉帳')
     } else {
       console.log(response)
     }
@@ -260,13 +259,9 @@ async function PostData(Data) {
   emit('loading', false);
 }
 
-// 判斷金額是否輸入為數字
-const AmountisNum = (Amount) => {
-  const checkAmount = Amount === "" ? 0 : Amount
-  return !/^\d+$/.test(checkAmount) ? true : false
-}
-
-watch(() => TransData.Amount, (newData) => {
-  AmountisNum(newData)
+watch(() => TransData.Amount, (newVal) => {
+  newVal = newVal.replaceAll(",", "")
+  TransData.Amount = NumComma(newVal)
+  AmountMsg.value = AmountisNum(newVal)
 })
 </script>

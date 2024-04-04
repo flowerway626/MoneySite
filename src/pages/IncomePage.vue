@@ -14,10 +14,11 @@
       </div>
       <!-- 類別 -->
       <div>
-        <label for="Message" class="font-semibold mb-2 text-left block dark:text-white">類別</label>
+        <label for="Message" class="font-semibold mb-2 text-left block dark:text-white">
+          <font-awesome-icon :icon="['fas', 'chart-pie']" /> 類別</label>
         <div class="shadow-sm rounded-md border dark:border-none w-full">
           <ul class="grid grid-cols-2 sm:grid-cols-3 bg-slate-100 dark:bg-neutral-700 rounded-md">
-            <li v-for="IncomeCg in IncomeCategories" :key="ment" :class="{
+            <li v-for="IncomeCg in IncomeCategories" :key="IncomeCg" :class="{
               'text-left px-1 py-1 cursor-pointer': true, 'bg-teal-100 dark:text-blcok': IncomeData.Cg === IncomeCg,
               'dark:text-white': IncomeData.Cg !== IncomeCg
             }" @click="IncomeData.Cg = IncomeCg">
@@ -27,16 +28,18 @@
       </div>
       <!-- 明細 -->
       <div>
-        <label for="Detail" class="font-semibold mb-2 text-left block dark:text-white">明細</label>
+        <label for="Detail" class="font-semibold mb-2 text-left block dark:text-white">
+          <font-awesome-icon :icon="['fas', 'align-left']" /> 明細</label>
         <input type="text" id="Detail" v-model="IncomeData.Detail"
           class="shadow-sm rounded-md border dark:border-none px-1 py-1 w-full text-left bg-slate-100 dark:text-white dark:bg-neutral-700">
       </div>
       <!-- 金額 -->
       <div>
-        <label for="Amount" class="font-semibold mb-2 text-left block dark:text-white">金額</label>
+        <label for="Amount" class="font-semibold mb-2 text-left block dark:text-white">
+          <font-awesome-icon :icon="['fas', 'dollar-sign']" /> 金額</label>
         <input type="text" id="Amount" v-model="IncomeData.Amount"
           class="px-1 py-1 w-full text-left outline-none font-bold bg-slate-100 dark:text-white dark:bg-neutral-700 shadow-sm rounded-md">
-        <h5 v-if="AmountisNum(IncomeData.Amount)" class="text-right text-red-300">* 只能輸入數字</h5>
+        <h5 v-if="AmountMsg" class="text-right text-red-300">* 只能輸入數字</h5>
       </div>
 
       <div class="sm:col-span-2">
@@ -44,7 +47,8 @@
       </div>
       <!-- 支出帳戶 -->
       <div class="">
-        <label for="Message" class="font-semibold mb-2 text-left block dark:text-white">帳戶</label>
+        <label for="Message" class="font-semibold mb-2 text-left block dark:text-white">
+          <font-awesome-icon :icon="['fas', 'wallet']" /> 帳戶</label>
         <div class="shadow-sm rounded-md border dark:border-none w-full">
           <ul class="grid grid-cols-2 sm:grid-cols-4 SelIncomeAcc bg-teal-400">
             <li v-for="Account in IncomeAccounts" :key="Account"
@@ -64,7 +68,8 @@
       </div>
       <!-- 經手帳戶 -->
       <div class="">
-        <label for="Message" class="font-semibold mb-2 text-left block dark:text-white">經手</label>
+        <label for="Message" class="font-semibold mb-2 text-left block dark:text-white">
+          <font-awesome-icon :icon="['fas', 'money-bill-transfer']" /> 經手</label>
         <div class="shadow-sm rounded-md border dark:border-none w-full">
           <ul class="grid grid-cols-2 sm:grid-cols-3 bg-slate-100 dark:bg-neutral-700 rounded-md">
             <li v-for="ment in IncomeMents" :key="ment" :class="{
@@ -77,7 +82,8 @@
       </div>
       <!-- 備註 -->
       <div class="sm:col-span-2">
-        <label for="Other" class="font-semibold mb-2 text-left block dark:text-white">備註</label>
+        <label for="Other" class="font-semibold mb-2 text-left block dark:text-white">
+          <font-awesome-icon :icon="['fas', 'pen-to-square']" /> 備註</label>
         <div class="grid grid-cols-2 sm:grid-cols-6 bg-slate-100 dark:bg-neutral-700 shadow-sm rounded-md">
           <div v-for="(other, index) in IncomeOthers" :key="other" class="px-1 py-1 text-left">
             <input type="checkbox" :id="'IncomeOthers' + index" v-model="IncomeData.Other" :value="other">
@@ -98,7 +104,7 @@
         focus-visible:outline-teal-600 sm:mr-5" @click="SubmitData(IncomeData)">送出</button>
       <button class="rounded-md bg-teal-600 px-3 sm:px-12 py-2.5 text-center text-sm font-semibold text-white
         shadow-sm hover:bg-teal-500 fous-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
-        focus-visible:outline-teal-600" @click="CleanData()">清除</button>
+        focus-visible:outline-teal-600" @click="CleanData(IncomeData, '收入')">清除</button>
     </div>
   </div>
 </template>
@@ -107,6 +113,7 @@
 import { reactive, ref, watch, defineEmits, onMounted } from 'vue'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import { fetchData, stoargaeData, updateData, fetchFormItem } from '@/utils/fetchData.js'
+import { AmountisNum, NumComma, CleanData } from '@/utils/dataValidation.js'
 import Swal from 'sweetalert2'
 
 const updateArrays = (data) => {
@@ -139,6 +146,7 @@ const IncomeMents = reactive([])
 const IncomeOthers = reactive([])
 let SelectAccount = ref('')
 let IncomeOtherInput = ref('')
+let AmountMsg = ref(false)
 
 let IncomeData = reactive({
   Type: '收入',
@@ -194,16 +202,6 @@ const ClassList = (Primary, Selected, ClassName) => {
   parentAccountItem.classList.add('bg-teal-100');
 }
 
-// 清空輸入資料
-const CleanData = () => {
-  for (const key in IncomeData) {
-    if (key !== "Other") IncomeData[key] = ""
-  }
-  IncomeData["Other"] = []
-  IncomeData["Type"] = "收入"
-  IncomeData["Date"] = new Date()
-}
-
 // 送出輸入資料
 const SubmitData = (Data) => {
   if (IncomeOtherInput.value.length !== 0) {
@@ -233,7 +231,7 @@ async function PostData(Data) {
     const response = await fetchData("post", "", Data)
     if (response.data.status === 'success') {
       Swal.fire({ title: '記帳成功!', icon: response.data.status })
-      CleanData()
+      CleanData(IncomeData, '收入')
     } else {
       console.log(response)
     }
@@ -245,13 +243,9 @@ async function PostData(Data) {
   emit('loading', false);
 }
 
-// 判斷金額是否輸入為數字
-const AmountisNum = (Amount) => {
-  const checkAmount = Amount === "" ? 0 : Amount
-  return !/^\d+$/.test(checkAmount) ? true : false
-}
-
-watch(() => IncomeData.Amount, (newData) => {
-  AmountisNum(newData)
+watch(() => IncomeData.Amount, (newVal) => {
+  newVal = newVal.replaceAll(",", "")
+  IncomeData.Amount = NumComma(newVal)
+  AmountMsg.value = AmountisNum(newVal)
 })
 </script>
