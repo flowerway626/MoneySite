@@ -1,1 +1,0 @@
-import{_ as t,b as c,c as s,F as o,d as e}from"./index-0cbd6146.js";const n={},a=e("h1",{class:"text-center text-white"},"404",-1),r=e("h1",{class:"text-center text-white"},"Not Found",-1);function _(d,l){return c(),s(o,null,[a,r],64)}const i=t(n,[["render",_]]);export{i as default};
