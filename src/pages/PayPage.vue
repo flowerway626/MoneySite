@@ -7,8 +7,8 @@
           text-input auto-apply dark week-start="0"></VueDatePicker>
         </div>
         <div class="col-span-1 sm:col-span-none">
-          <button class="rounded-md bg-teal-600 px-3 sm:px-5 py-2.5 text-center text-sm font-semibold text-white
-          shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
+          <button class="rounded-md bg-teal-400 px-3 sm:px-5 py-2.5 text-center text-sm
+          shadow-sm hover:bg-teal-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
             focus-visible:outline-teal-600" @click="refresh()">重整</button>
         </div>
       </div>
@@ -104,12 +104,12 @@
       </div>
     </div>
     <div class="mt-10 mx-auto grid grid-cols-2 gap-3 sm:block">
-      <button class="rounded-md bg-teal-600 px-3 sm:px-12 py-2.5 text-center text-sm font-semibold text-white
+      <button class="rounded-md bg-teal-400 px-3 sm:px-12 py-2.5 text-center text-sm
       shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
-        focus-visible:outline-teal-600 sm:mr-5" @click="SubmitData(PayData)">送出</button>
-      <button class="rounded-md bg-teal-600 px-3 sm:px-12 py-2.5 text-center text-sm font-semibold text-white
-        shadow-sm hover:bg-teal-500 fous-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
-        focus-visible:outline-teal-600" @click="CleanData(PayData, '支出')">清除</button>
+        focus-visible:outline-teal-400 sm:mr-5" @click="SubmitData(PayData)">送出</button>
+      <button class="rounded-md bg-teal-400 px-3 sm:px-12 py-2.5 text-center text-sm
+        shadow-sm hover:bg-teal-400 fous-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
+        focus-visible:outline-teal-400" @click="CleanData(PayData, '支出')">清除</button>
     </div>
   </div>
 </template>
@@ -117,9 +117,10 @@
 <script setup>
 import { reactive, ref, watch, defineEmits, onMounted } from 'vue'
 import VueDatePicker from '@vuepic/vue-datepicker';
-import { fetchData, stoargaeData, updateData, fetchFormItem } from '@/utils/fetchData.js'
+import { stoargaeData, updateData, fetchFormItem, PostData } from '@/utils/fetchData.js'
 import { AmountisNum, NumComma, CleanData } from '@/utils/dataValidation.js'
 import Swal from 'sweetalert2'
+import '@sweetalert2/theme-dark/dark.css';
 
 const updateArrays = (data) => {
   PayCategories.push(...data[0].PayCategories)
@@ -222,22 +223,12 @@ const ClassList = (Primary, Selected, ClassName) => {
   parentAccountItem.classList.add('bg-teal-100');
 }
 
-// // 清空輸入資料
-// const CleanData = () => {
-//   for (const key in PayData) {
-//     if (key !== "Other") PayData[key] = ""
-//     }
-//     PayData["Other"] = []
-//     PayData["Type"] = "支出"
-//     PayData["Date"] = new Date()
-// }
-
 // 送出輸入資料
 const SubmitData = (Data) => {
   if (PayOtherInput.value.length !== 0) {
     PayData.Other.push(PayOtherInput.value)
   }
-  Data.Other = Data.Other.join(", ")
+  Data.Other = Data.Other ? Data.Other.join(", ") : ""
   for (const Pay of Object.keys(PayData)) {
     if (Pay !== 'Payment' && Pay !== 'Other' && !PayData[Pay]) {
       if (Data.Pay !== '') {
@@ -251,26 +242,7 @@ const SubmitData = (Data) => {
   for (const key in Data) {
     formData.append(key, Data[key]);
   }
-  PostData(formData)
-}
-
-async function PostData(Data) {
-  emit('loading', true);
-  try {
-    // const cors = 'https://cors-anywhere.herokuapp.com/'; //解決 CORS 阻擋
-    const response = await fetchData("post", "", Data)
-    if (response.data.status === 'success') {
-      Swal.fire({ title: '記帳成功!', icon: response.data.status })
-      CleanData(PayData, "支出")
-    } else {
-      console.log(response)
-    }
-    console.log("response")
-  } catch (error) {
-    Swal.fire({ title: '失敗!', text: error.message, icon: 'error' })
-    console.error(error)
-  }
-  emit('loading', false);
+  PostData(formData, emit, "支出", PayData, CleanData)
 }
 
 watch(() => PayData.Amount, (newVal) => {

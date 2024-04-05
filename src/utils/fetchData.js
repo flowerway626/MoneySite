@@ -1,5 +1,6 @@
 import axios from "axios"
 import Swal from 'sweetalert2'
+import '@sweetalert2/theme-dark/dark.css';
 
 export const fetchData = async (Method, PageType, data) => {
   try {
@@ -15,6 +16,7 @@ export const fetchData = async (Method, PageType, data) => {
   }
 }
 
+// 更新 localstorage data
 export const fetchFormItem = async (Method, PageType, update) => {
   const response = await fetchData(Method, PageType)
   if (response.status === 200) {
@@ -35,4 +37,24 @@ export const updateData = (PageType, Next) => {
   if (stoargae) {
     Next(stoargae)
   }
+}
+
+// 送出資料
+export const PostData = async (Data, emit, Type, PageData, CleanFunc) => {
+  try {
+    emit('loading', true);
+    // const cors = 'https://cors-anywhere.herokuapp.com/'; //解決 CORS 阻擋
+    const response = await fetchData("post", "", Data)
+    if (response.data.status === 'success') {
+      Swal.fire({ title: '記帳成功!', icon: response.data.status })
+      CleanFunc(PageData, Type)
+    } else {
+      console.log(response)
+    }
+    console.log("response", response)
+  } catch (error) {
+    Swal.fire({ title: '失敗!', text: error.message, icon: 'error' })
+    console.error(error)
+  }
+  emit('loading', false);
 }
