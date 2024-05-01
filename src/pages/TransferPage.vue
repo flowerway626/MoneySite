@@ -88,11 +88,11 @@
         </div>
       </div>
       <!-- 經手帳戶 -->
-      <div class="">
+      <div class="sm:col-span-2">
         <label for="Message" class="font-semibold mb-2 text-left block dark:text-white">
           <font-awesome-icon :icon="['fas', 'money-bill-transfer']" /> 經手</label>
         <div class="shadow-sm rounded-md border dark:border-none w-full">
-          <ul class="grid grid-cols-2 sm:grid-cols-3 bg-slate-100 dark:bg-neutral-700 rounded-md">
+          <ul class="grid grid-cols-2 sm:grid-cols-6 bg-slate-100 dark:bg-neutral-700 rounded-md">
             <li v-for="ment in TransMents" :key="ment" :class="{
               'text-left px-1 py-1 cursor-pointer': true, 'bg-teal-100 dark:text-blcok': TransData.Transment === ment,
               'dark:text-white': TransData.Transment !== ment
@@ -228,7 +228,7 @@ const SubmitData = (Data) => {
   for (const Trans of Object.keys(TransData)) {
     if ((Trans === 'Cg' || Trans === 'Amount') && !TransData[Trans]) {
       if (Data.Trans !== '') {
-        Swal.fire({ title: '資料未輸入完整!', icon: 'warning' })
+        Swal.fire({ title: '資料未輸入完整!', icon: 'warning', showConfirmButton: false })
         return
       }
     }

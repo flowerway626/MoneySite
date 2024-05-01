@@ -232,7 +232,7 @@ const SubmitData = (Data) => {
   for (const Pay of Object.keys(PayData)) {
     if (Pay !== 'Payment' && Pay !== 'Other' && !PayData[Pay]) {
       if (Data.Pay !== '') {
-        Swal.fire({ title: '資料未輸入完整!', icon: 'warning' })
+        Swal.fire({ title: '資料未輸入完整!', icon: 'warning', showConfirmButton: false })
         return
       }
     }

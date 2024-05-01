@@ -212,7 +212,7 @@ const SubmitData = (Data) => {
   for (const Income of Object.keys(IncomeData)) {
     if (Income !== 'Incomement' && Income !== 'Other' && !IncomeData[Income]) {
       if (Data.Income !== '') {
-        Swal.fire({ title: '資料未輸入完整!', icon: 'warning' })
+        Swal.fire({ title: '資料未輸入完整!', icon: 'warning', showConfirmButton: false })
         return
       }
     }

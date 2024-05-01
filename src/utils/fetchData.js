@@ -11,7 +11,7 @@ export const fetchData = async (Method, PageType, data) => {
     : response = await axios.post(sheetsURL, data)
     return response
   } catch (error) {
-    Swal.fire({ title: 'ERROR', text: error.message, icon: 'error' })
+    Swal.fire({ title: 'ERROR', text: error.message, icon: 'error', showConfirmButton: false })
     console.error(error);
   }
 }
@@ -23,7 +23,7 @@ export const fetchFormItem = async (Method, PageType, update) => {
     await update(response.data)
     localStorage.setItem(PageType, JSON.stringify(response.data))
   } else {
-    Swal.fire({ title: 'oops!', text: response.data, icon: 'info' })
+    Swal.fire({ title: 'oops!', text: response.data, icon: 'info', showConfirmButton: false })
   }
 }
 
@@ -46,14 +46,14 @@ export const PostData = async (Data, emit, Type, PageData, CleanFunc) => {
     // const cors = 'https://cors-anywhere.herokuapp.com/'; //解決 CORS 阻擋
     const response = await fetchData("post", "", Data)
     if (response.data.status === 'success') {
-      Swal.fire({ title: '記帳成功!', icon: response.data.status })
+      Swal.fire({ title: '記帳成功', icon: response.data.status, showConfirmButton: false })
       CleanFunc(PageData, Type)
     } else {
       console.log(response)
     }
     console.log("response", response)
   } catch (error) {
-    Swal.fire({ title: '失敗!', text: error.message, icon: 'error' })
+    Swal.fire({ title: '失敗', text: error.message, icon: 'error', showConfirmButton: false })
     console.error(error)
   }
   emit('loading', false);
