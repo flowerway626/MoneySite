@@ -119,7 +119,7 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import { stoargaeData, updateData, fetchFormItem, PostData } from '@/utils/fetchData.js'
 import { AmountisNum, NumComma, CleanData} from '@/utils/dataValidation.js'
 import Swal from 'sweetalert2'
-import '@sweetalert2/theme-dark/dark.css';
+// import '@sweetalert2/theme-dark/dark.css';
 
 const updateArrays = (data) => {
   TransCategories.push(...data[0].TransCategories)

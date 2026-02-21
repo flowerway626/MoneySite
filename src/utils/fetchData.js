@@ -1,6 +1,6 @@
 import axios from "axios"
 import Swal from 'sweetalert2'
-import '@sweetalert2/theme-dark/dark.css';
+// import '@sweetalert2/theme-dark/dark.css';
 
 export const fetchData = async (Method, PageType, data) => {
   try {

@@ -63,6 +63,7 @@ const updateLoadingState = (val) => {
 }
 
 onMounted(() => {
-  ChangeTheme('dark')
+  ChangeTheme('dark');
+  document.querySelector("a").click();
 })
 </script>
